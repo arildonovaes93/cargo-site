@@ -1,0 +1,8 @@
+{
+  "name": "cargo-site",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "echo \"Starting site...\"",
+    "build": "echo \"Build step (not needed for static HTML)\""
+  }
+}
