@@ -2,14 +2,112 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>CarGo</title>
+  <title>CarGo — Conectando envios e viajantes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f8f9fa;
+      color: #333;
+    }
+    header {
+      background: #000;
+      color: #fff;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+    }
+    header p {
+      margin-top: 10px;
+      font-size: 1.2rem;
+      color: #ddd;
+    }
+    main {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    button {
+      margin-top: 20px;
+      background: #6772E5;
+      color: #fff;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #5469d4;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: #666;
+    }
+  </style>
 </head>
 <body>
-  <h1>CarGo</h1>
-  <p>
-    <a href="https://buy.stripe.com/8x2fZ958f07w8485aK7N600" target="_blank" rel="noopener">
-      Ir para Pagamento
-    </a>
-  </p>
+  <header>
+    <h1>CarGo</h1>
+    <p>Conectando quem viaja com quem precisa enviar produtos</p>
+  </header>
+
+  <main>
+    <div class="card">
+      <h2>Cadastro de Envio</h2>
+      <form name="cargo-form" method="POST" data-netlify="true">
+        <label for="origem">Origem</label>
+        <input type="text" id="origem" name="origem" placeholder="Cidade de origem" required>
+
+        <label for="destino">Destino</label>
+        <input type="text" id="destino" name="destino" placeholder="Cidade de destino" required>
+
+        <label for="tamanho">Tamanho do produto</label>
+        <select id="tamanho" name="tamanho" required>
+          <option value="">Selecione...</option>
+          <option value="pequeno">Pequeno</option>
+          <option value="medio">Médio</option>
+          <option value="grande">Grande</option>
+        </select>
+
+        <label for="detalhes">Detalhes adicionais</label>
+        <textarea id="detalhes" name="detalhes" placeholder="Ex.: frágil, peso aproximado..."></textarea>
+
+        <button type="submit">Enviar cadastro</button>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <p>CarGo © 2025 — Todos os direitos reservados</p>
+  </footer>
 </body>
 </html>
