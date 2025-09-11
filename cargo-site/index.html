@@ -1,77 +1,40 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CarGo — Conectando envios e viajantes</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f8f9fa;
-      color: #333;
+    :root {
+      --brand:#000; --bg:#f8f9fb; --card:#fff; --text:#222; --muted:#6b7280; --primary:#6772E5; --primary-hover:#5469d4;
+      --border:#e5e7eb; --radius:12px;
     }
-    header {
-      background: #000;
-      color: #fff;
-      text-align: center;
-      padding: 40px 20px;
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial, Helvetica, sans-serif;background:var(--bg);color:var(--text)}
+    header{background:var(--brand);color:#fff;text-align:center;padding:36px 20px}
+    header h1{margin:0;font-size:2.4rem}
+    header p{margin:8px 0 0;color:#ddd}
+    main{max-width:860px;margin:36px auto;padding:0 20px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 2px 8px rgba(0,0,0,.06);padding:24px}
+    .muted{color:var(--muted);font-size:.95rem}
+    h2{margin:0 0 12px}
+    label{display:block;font-weight:600;margin:14px 0 6px}
+    input, select, textarea{
+      width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;font-size:15px;background:#fff
     }
-    header h1 {
-      margin: 0;
-      font-size: 2.5rem;
-    }
-    header p {
-      margin-top: 10px;
-      font-size: 1.2rem;
-      color: #ddd;
-    }
-    main {
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
-    .card {
-      background: #fff;
-      border-radius: 10px;
-      padding: 30px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 12px;
-      margin-top: 6px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 1rem;
-    }
-    button {
-      margin-top: 20px;
-      background: #6772E5;
-      color: #fff;
-      border: none;
-      padding: 14px 24px;
-      border-radius: 6px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #5469d4;
-    }
-    footer {
-      text-align: center;
-      padding: 20px;
-      margin-top: 40px;
-      font-size: 0.9rem;
-      color: #666;
-    }
+    textarea{min-height:110px;resize:vertical}
+    .row{display:flex;gap:16px;flex-wrap:wrap}
+    .col{flex:1 1 260px}
+    .actions{display:flex;gap:12px;align-items:center;margin-top:18px}
+    .btn{appearance:none;border:none;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer}
+    .btn-primary{background:var(--primary);color:#fff}
+    .btn-primary:hover{background:var(--primary-hover)}
+    .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+    .stepper{display:flex;gap:8px;margin:0 0 16px}
+    .chip{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#fff;font-size:.9rem}
+    .chip.active{background:#eef0ff;border-color:#cfd6ff;color:#2d34a8;font-weight:700}
+    .hidden{display:none}
+    footer{text-align:center;color:var(--muted);padding:28px}
   </style>
 </head>
 <body>
@@ -82,32 +45,154 @@
 
   <main>
     <div class="card">
-      <h2>Cadastro de Envio</h2>
-      <form name="cargo-form" method="POST" data-netlify="true">
-        <label for="origem">Origem</label>
-        <input type="text" id="origem" name="origem" placeholder="Cidade de origem" required>
+      <div class="stepper">
+        <span id="chip1" class="chip active">1) Cadastro</span>
+        <span id="chip2" class="chip">2) Detalhes do envio</span>
+      </div>
 
-        <label for="destino">Destino</label>
-        <input type="text" id="destino" name="destino" placeholder="Cidade de destino" required>
+      <!-- Formulário único (Netlify Forms) -->
+      <form id="cargoForm" name="cargo-form" method="POST" data-netlify="true"
+            netlify-honeypot="bot-field" action="/sucesso.html">
+        <!-- Netlify identification -->
+        <input type="hidden" name="form-name" value="cargo-form">
+        <p style="display:none;">
+          <label>Não preencha: <input name="bot-field"></label>
+        </p>
 
-        <label for="tamanho">Tamanho do produto</label>
-        <select id="tamanho" name="tamanho" required>
-          <option value="">Selecione...</option>
-          <option value="pequeno">Pequeno</option>
-          <option value="medio">Médio</option>
-          <option value="grande">Grande</option>
-        </select>
+        <!-- ETAPA 1: Cadastro -->
+        <section id="step1">
+          <h2>Cadastro</h2>
+          <p class="muted">Faça seu cadastro para continuarmos. Se você já tem cadastro, pode pular esta etapa.</p>
 
-        <label for="detalhes">Detalhes adicionais</label>
-        <textarea id="detalhes" name="detalhes" placeholder="Ex.: frágil, peso aproximado..."></textarea>
+          <div class="row">
+            <div class="col">
+              <label for="nome">Nome completo</label>
+              <input type="text" id="nome" name="nome" placeholder="Seu nome" required>
+            </div>
+            <div class="col">
+              <label for="email">E-mail</label>
+              <input type="email" id="email" name="email" placeholder="voce@email.com" required>
+            </div>
+            <div class="col">
+              <label for="telefone">Telefone (WhatsApp)</label>
+              <input type="tel" id="telefone" name="telefone" placeholder="(00) 90000-0000" required>
+            </div>
+          </div>
 
-        <button type="submit">Enviar cadastro</button>
+          <div class="actions">
+            <button type="button" class="btn btn-primary" id="irParaEnvio">Continuar</button>
+            <button type="button" class="btn btn-ghost" id="jaTenho">Já tenho cadastro</button>
+          </div>
+        </section>
+
+        <!-- ETAPA 2: Envio -->
+        <section id="step2" class="hidden">
+          <h2>Detalhes do envio</h2>
+          <p class="muted">Informe origem, destino e o tamanho do produto. Depois você confirmará o pagamento.</p>
+
+          <!-- Campo escondido para sabermos se pulou o cadastro -->
+          <input type="hidden" name="tipo_cadastro" id="tipoCadastro" value="novo">
+
+          <!-- Se a pessoa clicou "Já tenho cadastro", pedimos ao menos e-mail/telefone -->
+          <div id="miniId" class="hidden">
+            <div class="row">
+              <div class="col">
+                <label for="email_existente">E-mail cadastrado</label>
+                <input type="email" id="email_existente" name="email_existente" placeholder="voce@email.com">
+              </div>
+              <div class="col">
+                <label for="telefone_existente">Telefone cadastrado</label>
+                <input type="tel" id="telefone_existente" name="telefone_existente" placeholder="(00) 90000-0000">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <label for="origem">Origem</label>
+              <input type="text" id="origem" name="origem" placeholder="Cidade de origem" required>
+            </div>
+            <div class="col">
+              <label for="destino">Destino</label>
+              <input type="text" id="destino" name="destino" placeholder="Cidade de destino" required>
+            </div>
+          </div>
+
+          <label for="tamanho">Tamanho do produto</label>
+          <select id="tamanho" name="tamanho" required>
+            <option value="">Selecione...</option>
+            <option value="pequeno">Pequeno</option>
+            <option value="medio">Médio</option>
+            <option value="grande">Grande</option>
+          </select>
+
+          <label for="detalhes">Detalhes adicionais</label>
+          <textarea id="detalhes" name="detalhes" placeholder="Ex.: frágil, peso aproximado..."></textarea>
+
+          <div class="actions">
+            <button type="button" class="btn btn-ghost" id="voltar">Voltar</button>
+            <button type="submit" class="btn btn-primary">Enviar cadastro</button>
+          </div>
+        </section>
       </form>
     </div>
   </main>
 
-  <footer>
-    <p>CarGo © 2025 — Todos os direitos reservados</p>
-  </footer>
+  <footer>CarGo © 2025 — Todos os direitos reservados</footer>
+
+  <script>
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const chip1 = document.getElementById('chip1');
+    const chip2 = document.getElementById('chip2');
+    const tipoCadastro = document.getElementById('tipoCadastro');
+    const miniId = document.getElementById('miniId');
+
+    const irParaEnvio = document.getElementById('irParaEnvio');
+    const jaTenho = document.getElementById('jaTenho');
+    const voltar = document.getElementById('voltar');
+
+    function goStep2() {
+      step1.classList.add('hidden');
+      step2.classList.remove('hidden');
+      chip1.classList.remove('active');
+      chip2.classList.add('active');
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+    function goStep1() {
+      step2.classList.add('hidden');
+      step1.classList.remove('hidden');
+      chip2.classList.remove('active');
+      chip1.classList.add('active');
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    irParaEnvio.addEventListener('click', () => {
+      // valida campos obrigatórios do cadastro
+      const nome = document.getElementById('nome');
+      const email = document.getElementById('email');
+      const tel = document.getElementById('telefone');
+      if (!nome.value || !email.value || !tel.value) {
+        alert('Preencha nome, e-mail e telefone para continuar.');
+        return;
+      }
+      tipoCadastro.value = 'novo';
+      miniId.classList.add('hidden');
+      goStep2();
+    });
+
+    jaTenho.addEventListener('click', () => {
+      // marca que pulou cadastro
+      tipoCadastro.value = 'existente';
+      // esconde obrigatoriedade do cadastro e mostra mini identificação
+      document.getElementById('nome').removeAttribute('required');
+      document.getElementById('email').removeAttribute('required');
+      document.getElementById('telefone').removeAttribute('required');
+      miniId.classList.remove('hidden');
+      goStep2();
+    });
+
+    voltar.addEventListener('click', goStep1);
+  </script>
 </body>
 </html>
