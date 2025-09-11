@@ -50,14 +50,12 @@
         <span id="chip2" class="chip">2) Detalhes do envio</span>
       </div>
 
-      <!-- Formulário único (Netlify Forms) -->
+      <!-- ✅ Form principal -->
       <form id="cargoForm" name="cargo-form" method="POST" data-netlify="true"
-            netlify-honeypot="bot-field" action="/sucesso.html">
-        <!-- Netlify identification -->
+            netlify-honeypot="bot-field" action="/sucesso.html" accept-charset="UTF-8">
+        <!-- identificação para Netlify -->
         <input type="hidden" name="form-name" value="cargo-form">
-        <p style="display:none;">
-          <label>Não preencha: <input name="bot-field"></label>
-        </p>
+        <p style="display:none;"><label>Não preencha: <input name="bot-field"></label></p>
 
         <!-- ETAPA 1: Cadastro -->
         <section id="step1">
@@ -90,10 +88,8 @@
           <h2>Detalhes do envio</h2>
           <p class="muted">Informe origem, destino e o tamanho do produto. Depois você confirmará o pagamento.</p>
 
-          <!-- Campo escondido para sabermos se pulou o cadastro -->
           <input type="hidden" name="tipo_cadastro" id="tipoCadastro" value="novo">
 
-          <!-- Se a pessoa clicou "Já tenho cadastro", pedimos ao menos e-mail/telefone -->
           <div id="miniId" class="hidden">
             <div class="row">
               <div class="col">
@@ -140,6 +136,7 @@
 
   <footer>CarGo © 2025 — Todos os direitos reservados</footer>
 
+  <!-- ✅ Scripts -->
   <script>
     const step1 = document.getElementById('step1');
     const step2 = document.getElementById('step2');
@@ -168,7 +165,6 @@
     }
 
     irParaEnvio.addEventListener('click', () => {
-      // valida campos obrigatórios do cadastro
       const nome = document.getElementById('nome');
       const email = document.getElementById('email');
       const tel = document.getElementById('telefone');
@@ -182,9 +178,7 @@
     });
 
     jaTenho.addEventListener('click', () => {
-      // marca que pulou cadastro
       tipoCadastro.value = 'existente';
-      // esconde obrigatoriedade do cadastro e mostra mini identificação
       document.getElementById('nome').removeAttribute('required');
       document.getElementById('email').removeAttribute('required');
       document.getElementById('telefone').removeAttribute('required');
@@ -194,5 +188,35 @@
 
     voltar.addEventListener('click', goStep1);
   </script>
+
+  <!-- ✅ Script para enviar ao Netlify e redirecionar -->
+  <script>
+    const form = document.getElementById('cargoForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        const data = new FormData(form);
+        const resp = await fetch("/", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams(data).toString(),
+        });
+        if (resp.ok) {
+          window.location.href = "/sucesso.html";
+        } else {
+          alert("Não consegui enviar seu cadastro agora. Tente novamente.");
+        }
+      } catch (err) {
+        alert("Erro de rede ao enviar. Tente novamente.");
+      }
+    });
+  </script>
+
+  <!-- ✅ Form fantasma para o Netlify registrar no build -->
+  <form name="cargo-form" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="text" name="origem">
+    <input type="text" name="destino">
+    <input type="text" name="tamanho">
+  </form>
 </body>
 </html>
